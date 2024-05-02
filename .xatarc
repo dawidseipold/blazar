@@ -1,6 +1,6 @@
 {
   "databaseURL": "https://Dawid-Seipold-s-workspace-ni8fto.eu-west-1.xata.sh/db/blazar",
   "codegen": {
-    "output": "src/xata.ts"
+    "output": "src/xata/index.ts"
   }
 }

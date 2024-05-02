@@ -3,11 +3,12 @@ import { signIn } from "@/lib/auth";
 export function SignIn() {
   return (
     <form
-      action={async () => {
+      action={async (formData) => {
         "use server";
-        await signIn();
+        await signIn("resend", formData);
       }}
     >
+      <input type="text" name="email" placeholder="Email" />
       <button type="submit">Sign in</button>
     </form>
   );

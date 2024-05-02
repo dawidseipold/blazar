@@ -17,6 +17,7 @@ export const users = pgTable("user", {
     mode: "date",
     withTimezone: true,
   }),
+  password: text("password").notNull(),
   image: text("image"),
 });
 
