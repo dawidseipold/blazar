@@ -8,9 +8,9 @@ interface AuthLayoutProps {
 const AuthLayout = async ({ children }: AuthLayoutProps) => {
   const session = await auth();
 
-  if (session) {
-    return redirect("/");
-  }
+  // if (session) {
+  //   return redirect("/");
+  // }
 
   return (
     <main
@@ -20,6 +20,7 @@ const AuthLayout = async ({ children }: AuthLayoutProps) => {
       }}
     >
       <div className="flex flex-col gap-y-4 max-w-96 items-center">
+        <div>{JSON.stringify(session)}</div>
         {/* <Logo /> */} <div>Logo</div>
         {children}
       </div>

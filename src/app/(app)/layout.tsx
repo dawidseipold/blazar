@@ -8,6 +8,8 @@ interface AppLayoutProps {
 const AppLayout = async ({ children }: AppLayoutProps) => {
   const session = await auth();
 
+  console.log(session);
+
   if (!session) {
     redirect("/auth/signin");
   }

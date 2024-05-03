@@ -1,18 +1,13 @@
-import NextAuth from "next-auth";
+import NextAuth, { type User } from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "../drizzle";
 import Resend from "next-auth/providers/resend";
 import Credentials from "next-auth/providers/credentials";
-import { hashAndSaltPassword } from "@/utils/auth";
-import {
-  checkCredentials,
-  checkEmailVerification,
-  getUser,
-  getUserCredentials,
-} from "@/utils/db/actions/users";
-import { UserSelect } from "../drizzle/schema";
-import { type SignInSchema, signInSchema } from "../valibot/schema/auth";
-import { ValiError, safeParseAsync } from "valibot";
+import { getUser } from "@/utils/db/actions/users";
+import { type SignInSchema } from "../valibot/schema/auth";
+import { UserSelect, users } from "../drizzle/schema";
+import { hashAndSaltPassword, verifyPassword } from "@/utils/auth";
+import { and, eq } from "drizzle-orm";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -23,18 +18,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials): Promise<SignInSchema | null> => {
-        const { email, password } = credentials as SignInSchema;
+        try {
+          const { email, password } = credentials as SignInSchema;
 
-        return await getUser(email);
+          const user = await getUser(email);
+
+          if (!user) {
+            return null;
+          }
+
+          return {
+            email: user.email,
+            password: user.password,
+          };
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
       },
     }),
-    Resend({
-      from: "no-reply@blazar.lol",
-      secret: process.env.AUTH_EMAIL_SECRET,
-    }),
+    // Resend({
+    //   from: "no-reply@blazar.lol",
+    //   secret: process.env.AUTH_EMAIL_SECRET,
+    // }),
   ],
   basePath: "/api/auth",
   pages: {
-    signIn: "/auth/signin",
+    // signIn: "/auth/signin",
   },
 });

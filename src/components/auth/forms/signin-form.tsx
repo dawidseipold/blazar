@@ -100,6 +100,7 @@ const SignInForm = () => {
                   onBlur={onBlur}
                   onChange={(e) => setValue(e.target.value)}
                   placeholder="Password"
+                  type="password"
                 />
                 {errors.map((error) => (
                   <div key={error} className="text-red-500">
