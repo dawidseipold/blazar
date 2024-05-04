@@ -4,78 +4,75 @@ import {
   text,
   primaryKey,
   integer,
+  bigserial,
+  serial,
+  boolean,
 } from "drizzle-orm/pg-core";
-import type { AdapterAccount } from "next-auth/adapters";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-export const users = pgTable("user", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name"),
-  email: text("email").notNull(),
-  emailVerified: timestamp("emailVerified", {
-    mode: "date",
-    withTimezone: true,
-  }),
-  password: text("password").notNull(),
-  image: text("image"),
+export const userTable = pgTable("user", {
+  id: text("id").primaryKey(),
+  email: text("email").unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  // TODO: Create an id suffix for the username
+  username: text("username").unique(),
+  passwordHash: text("password_hash"),
 });
 
-export const accounts = pgTable(
-  "account",
-  {
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"]>().notNull(),
-    provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    token_type: text("token_type"),
-    scope: text("scope"),
-    id_token: text("id_token"),
-    session_state: text("session_state"),
-  },
-  (account) => ({
-    compoundKey: primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    }),
-  })
-);
+export const userInsertSchema = createInsertSchema(userTable);
+export const userSelectSchema = createSelectSchema(userTable);
 
-export const sessions = pgTable("session", {
-  sessionToken: text("sessionToken").primaryKey(),
-  userId: text("userId")
+export type UserInsertSchema = typeof userTable.$inferInsert;
+export type UserSelectSchema = typeof userTable.$inferSelect;
+
+export const sessionTable = pgTable("session", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  expires: timestamp("expires", { mode: "date", withTimezone: true }).notNull(),
+    .references(() => userTable.id),
+  expiresAt: timestamp("expires_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
 });
 
-export const verificationTokens = pgTable(
-  "verificationToken",
-  {
-    identifier: text("identifier").notNull(),
-    token: text("token").notNull(),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
-  },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
+export const sessionInsertSchema = createInsertSchema(sessionTable);
+export const sessionSelectSchema = createSelectSchema(sessionTable);
+
+export type SessionInsertSchema = typeof sessionTable.$inferInsert;
+export type SessionSelectSchema = typeof sessionTable.$inferSelect;
+
+export const emailVerificationTable = pgTable("email_verification", {
+  id: serial("id").primaryKey(),
+  code: text("code"),
+  userId: text("user_id")
+    .unique()
+    .references(() => userTable.id),
+  email: text("email"),
+  expiresAt: timestamp("expires_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
+});
+
+export const emailVerificationInsertSchema = createInsertSchema(
+  emailVerificationTable
+);
+export const emailVerificationSelectSchema = createSelectSchema(
+  emailVerificationTable
 );
 
-export type UserInsert = typeof users.$inferInsert;
-export type UserSelect = typeof users.$inferSelect;
+export type EmailVerificationInsertSchema =
+  typeof emailVerificationTable.$inferInsert;
+export type EmailVerificationSelectSchema =
+  typeof emailVerificationTable.$inferSelect;
 
-export type AccountInsert = typeof accounts.$inferInsert;
-export type AccountSelect = typeof accounts.$inferSelect;
-
-export type SessionInsert = typeof sessions.$inferInsert;
-export type SessionSelect = typeof sessions.$inferSelect;
-
-export type VerificationTokenInsert = typeof verificationTokens.$inferInsert;
-export type VerificationTokenSelect = typeof verificationTokens.$inferSelect;
+export const passwordResetTokenTable = pgTable("password_reset_token", {
+  id: serial("id").primaryKey(),
+  tokenHash: text("token_hash").unique(),
+  userId: text("user_id").references(() => userTable.id),
+  expiresAt: timestamp("expires_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
+});

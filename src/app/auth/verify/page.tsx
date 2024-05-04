@@ -1,8 +1,9 @@
+import VerifyForm from "@/components/auth/forms/verify-form";
+
 const VerifyPage = () => {
   return (
     <div>
-      <input className="text-black" type="number" max="6" />
-      <button>Verify</button>
+      <VerifyForm />
     </div>
   );
 };

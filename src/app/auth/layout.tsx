@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { validateSession } from "@/utils/auth/session";
 import { redirect } from "next/navigation";
 
 interface AuthLayoutProps {
@@ -6,9 +6,9 @@ interface AuthLayoutProps {
 }
 
 const AuthLayout = async ({ children }: AuthLayoutProps) => {
-  const session = await auth();
+  const { user } = await validateSession();
 
-  // if (session) {
+  // if (user) {
   //   return redirect("/");
   // }
 
@@ -20,7 +20,6 @@ const AuthLayout = async ({ children }: AuthLayoutProps) => {
       }}
     >
       <div className="flex flex-col gap-y-4 max-w-96 items-center">
-        <div>{JSON.stringify(session)}</div>
         {/* <Logo /> */} <div>Logo</div>
         {children}
       </div>

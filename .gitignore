@@ -19,6 +19,10 @@
 # misc
 .DS_Store
 *.pem
+/.drizzle/
+/.xata/
+./drizzle/meta/_journal.json
+
 
 # debug
 npm-debug.log*

@@ -1,10 +1,10 @@
 "use client";
 
-import { signIn } from "@/utils/auth/sign";
+import { verifyUser } from "@/utils/auth/user";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
 
-const SignInForm = () => {
+const VerifyForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
@@ -12,7 +12,7 @@ const SignInForm = () => {
       {({ isValid, submit }) => (
         <form
           ref={formRef}
-          action={signIn}
+          action={verifyUser}
           onSubmit={(e) => {
             e.preventDefault();
             submit().then((isValid) => {
@@ -24,34 +24,15 @@ const SignInForm = () => {
             });
           }}
         >
-          <Field name="email">
+          <Field name="code">
             {({ value, setValue, onBlur, errors }) => (
               <div>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="code">Code</label>
                 <input
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  onBlur={onBlur}
-                />
-                {errors.map((error) => (
-                  <div key={error}>{error}</div>
-                ))}
-              </div>
-            )}
-          </Field>
-
-          <Field name="password">
-            {({ value, setValue, onBlur, errors }) => (
-              <div>
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  type="password"
+                  id="code"
+                  name="code"
+                  placeholder="Code"
+                  type="text"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   onBlur={onBlur}
@@ -64,7 +45,7 @@ const SignInForm = () => {
           </Field>
 
           <button type="submit" disabled={!isValid}>
-            Sign In
+            Verify
           </button>
         </form>
       )}
@@ -72,4 +53,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default VerifyForm;

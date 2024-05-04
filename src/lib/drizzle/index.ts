@@ -7,6 +7,4 @@ const client = new Client({ connectionString: xata.sql.connectionString });
 
 client.connect();
 
-export const test = xata.sql.connectionString;
-
 export const db = drizzle(client);

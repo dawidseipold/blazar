@@ -1,10 +1,10 @@
 "use client";
 
-import { signIn } from "@/utils/auth/sign";
+import { createPasswordChangeRequest } from "@/utils/auth/password-reset-token";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
 
-const SignInForm = () => {
+const ResetPasswordForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
@@ -12,7 +12,7 @@ const SignInForm = () => {
       {({ isValid, submit }) => (
         <form
           ref={formRef}
-          action={signIn}
+          action={createPasswordChangeRequest}
           onSubmit={(e) => {
             e.preventDefault();
             submit().then((isValid) => {
@@ -43,28 +43,8 @@ const SignInForm = () => {
             )}
           </Field>
 
-          <Field name="password">
-            {({ value, setValue, onBlur, errors }) => (
-              <div>
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  type="password"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  onBlur={onBlur}
-                />
-                {errors.map((error) => (
-                  <div key={error}>{error}</div>
-                ))}
-              </div>
-            )}
-          </Field>
-
           <button type="submit" disabled={!isValid}>
-            Sign In
+            Send
           </button>
         </form>
       )}
@@ -72,4 +52,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default ResetPasswordForm;

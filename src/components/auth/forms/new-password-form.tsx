@@ -1,18 +1,24 @@
 "use client";
 
-import { signIn } from "@/utils/auth/sign";
+import { createNewPasswordHash } from "@/utils/auth/password";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
+import { useFormState } from "react-dom";
 
-const SignInForm = () => {
+interface NewPasswordFormProps {
+  token?: string;
+}
+
+const NewPasswordForm = ({ token }: NewPasswordFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
+  const [_, formAction] = useFormState(createNewPasswordHash, token);
 
   return (
     <Form>
       {({ isValid, submit }) => (
         <form
           ref={formRef}
-          action={signIn}
+          action={formAction}
           onSubmit={(e) => {
             e.preventDefault();
             submit().then((isValid) => {
@@ -24,14 +30,15 @@ const SignInForm = () => {
             });
           }}
         >
-          <Field name="email">
+          <Field name="new-password">
             {({ value, setValue, onBlur, errors }) => (
               <div>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="new-password">New Password</label>
                 <input
-                  id="email"
-                  name="email"
-                  placeholder="Email"
+                  id="new-password"
+                  name="new-password"
+                  placeholder="New Password"
+                  type="password"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   onBlur={onBlur}
@@ -43,14 +50,26 @@ const SignInForm = () => {
             )}
           </Field>
 
-          <Field name="password">
+          <Field
+            name="confirm-new-password"
+            listenTo={["new-password"]}
+            onChangeValidate={(val, form) => {
+              if (val === form.getFieldValue("new-password")?.value) {
+                return Promise.resolve(true);
+              } else {
+                return Promise.reject("Passwords must match");
+              }
+            }}
+          >
             {({ value, setValue, onBlur, errors }) => (
               <div>
-                <label htmlFor="password">Password</label>
+                <label htmlFor="confirm-new-password">
+                  Confirm New Password
+                </label>
                 <input
-                  id="password"
-                  name="password"
-                  placeholder="Password"
+                  id="confirm-new-password"
+                  name="confirm-new-password"
+                  placeholder="Confirm New Password"
                   type="password"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
@@ -64,7 +83,7 @@ const SignInForm = () => {
           </Field>
 
           <button type="submit" disabled={!isValid}>
-            Sign In
+            Reset Password
           </button>
         </form>
       )}
@@ -72,4 +91,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default NewPasswordForm;

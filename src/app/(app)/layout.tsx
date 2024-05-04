@@ -1,4 +1,5 @@
-import { auth } from "@/lib/auth";
+import { validateSession } from "@/utils/auth/session";
+import { signOut } from "@/utils/auth/sign";
 import { redirect } from "next/navigation";
 
 interface AppLayoutProps {
@@ -6,15 +7,21 @@ interface AppLayoutProps {
 }
 
 const AppLayout = async ({ children }: AppLayoutProps) => {
-  const session = await auth();
+  const { user } = await validateSession();
 
-  console.log(session);
-
-  if (!session) {
-    redirect("/auth/signin");
+  if (!user) {
+    return redirect("/auth/signin");
   }
 
-  return <div>{children}</div>;
+  return (
+    <div>
+      <form action={signOut}>
+        <button>Sign Out</button>
+      </form>
+
+      {children}
+    </div>
+  );
 };
 
 export default AppLayout;
