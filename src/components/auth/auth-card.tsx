@@ -39,25 +39,38 @@ const AuthCard = ({ children }: AuthCardRootProps) => {
 };
 
 AuthCard.Root = AuthCard;
-AuthCard.Header = ({ children }: AuthCardHeaderProps) => (
+AuthCard.displayName = "AuthCard";
+
+const AuthCardHeader = ({ children }: AuthCardHeaderProps) => (
   <div className="flex flex-col gap-y-2 mb-2">{children}</div>
 );
-AuthCard.Title = ({ children }: AuthCardTitleProps) => (
+AuthCardHeader.displayName = "AuthCard.Header";
+
+const AuthCardTitle = ({ children }: AuthCardTitleProps) => (
   <h1 className="text-2xl font-bold">{children}</h1>
 );
-AuthCard.Description = ({ children }: AuthCardDescriptionProps) => (
+AuthCardTitle.displayName = "AuthCard.Title";
+
+const AuthCardDescription = ({ children }: AuthCardDescriptionProps) => (
   <p className="text-sm font-medium text-gray-500">{children}</p>
 );
-AuthCard.Content = ({ children }: AuthCardContentProps) => (
+AuthCardDescription.displayName = "AuthCard.Description";
+
+const AuthCardContent = ({ children }: AuthCardContentProps) => (
   <main className="flex flex-col gap-y-4">{children}</main>
 );
-AuthCard.Footer = ({ children }: AuthCardFooterProps) => (
+AuthCardContent.displayName = "AuthCard.Content";
+
+const AuthCardFooter = ({ children }: AuthCardFooterProps) => (
   <div className="flex flex-col gap-y-2 items-center">{children}</div>
 );
-AuthCard.Link = ({ children, href }: AuthCardLinkProps) => (
+AuthCardFooter.displayName = "AuthCard.Footer";
+
+const AuthCardLink = ({ children, href }: AuthCardLinkProps) => (
   <Link className="text-blue-500" href={href}>
     {children}
   </Link>
 );
+AuthCardLink.displayName = "AuthCard.Link";
 
 export default AuthCard;
