@@ -1,6 +1,6 @@
 "use client";
 
-import { createPasswordChangeRequest } from "@/utils/auth/password-reset-token";
+import { createPasswordChangeRequest } from "@/utils/password-reset-token";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
 

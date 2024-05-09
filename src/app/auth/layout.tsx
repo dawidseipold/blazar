@@ -1,4 +1,4 @@
-import { validateSession } from "@/utils/auth/session";
+import { validateSession } from "@/utils/session";
 import { redirect } from "next/navigation";
 
 interface AuthLayoutProps {

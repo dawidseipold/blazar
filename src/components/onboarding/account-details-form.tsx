@@ -1,10 +1,12 @@
 "use client";
 
-import { signIn } from "@/utils/sign";
+import { setAccountDetails } from "@/utils/onboarding";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
 
-const SignInForm = () => {
+interface AccountDetailsFormProps {}
+
+const AccountDetailsForm = ({}: AccountDetailsFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
@@ -12,7 +14,7 @@ const SignInForm = () => {
       {({ isValid, submit }) => (
         <form
           ref={formRef}
-          action={signIn}
+          action={setAccountDetails}
           onSubmit={(e) => {
             e.preventDefault();
             submit().then((isValid) => {
@@ -24,47 +26,44 @@ const SignInForm = () => {
             });
           }}
         >
-          <Field name="email">
+          {/* <Field name="avatar">
             {({ value, setValue, onBlur, errors }) => (
               <div>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="avatar">Avatar</label>
                 <input
-                  id="email"
-                  name="email"
-                  placeholder="Email"
+                  id="avatar"
+                  name="avatar"
+                  placeholder="Avatar"
+                  type="file"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   onBlur={onBlur}
                 />
-                {errors.map((error) => (
-                  <div key={error}>{error}</div>
-                ))}
+                {errors && <div>{errors}</div>}
               </div>
             )}
-          </Field>
+          </Field> */}
 
-          <Field name="password">
+          <Field name="username">
             {({ value, setValue, onBlur, errors }) => (
               <div>
-                <label htmlFor="password">Password</label>
+                <label htmlFor="username">Username</label>
                 <input
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  type="password"
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                  type="text"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   onBlur={onBlur}
                 />
-                {errors.map((error) => (
-                  <div key={error}>{error}</div>
-                ))}
+                {errors && <div>{errors}</div>}
               </div>
             )}
           </Field>
 
-          <button type="submit" disabled={!isValid}>
-            Sign In
+          <button disabled={!isValid} onClick={submit}>
+            Continue
           </button>
         </form>
       )}
@@ -72,4 +71,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default AccountDetailsForm;

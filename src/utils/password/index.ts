@@ -4,7 +4,7 @@ import { db } from "@/lib/drizzle";
 import { passwordResetTokenTable } from "@/lib/drizzle/schema";
 import { eq } from "drizzle-orm";
 
-// import { hash, verify } from "@node-rs/argon2";
+import { hash, verify } from "argon2";
 
 import { isWithinExpirationDate } from "oslo";
 import { sha256 } from "oslo/crypto";
@@ -18,7 +18,7 @@ import { removePasswordResetTokens } from "../password-reset-token/db";
 import { PASSWORD_HASH_OPTIONS } from "@/constants/hash";
 
 export const generatePasswordHash = async (password: string) => {
-  return await Bun.password.hash(password, PASSWORD_HASH_OPTIONS);
+  return await hash(password, PASSWORD_HASH_OPTIONS);
 };
 
 export const createNewPasswordHash = async (
@@ -59,5 +59,5 @@ export const createNewPasswordHash = async (
 
 // UTILITY
 export const verifyPasswordHash = async (hash: string, password: string) => {
-  return await Bun.password.verify(password, hash);
+  return await verify(hash, password);
 };

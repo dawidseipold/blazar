@@ -34,4 +34,9 @@ declare module "lucia" {
   interface Lucia {
     Lucia: typeof lucia;
   }
+
+  interface User {
+    id: string;
+    emailVerified: boolean;
+  }
 }

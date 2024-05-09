@@ -1,6 +1,6 @@
 "use client";
 
-import { createNewPasswordHash } from "@/utils/auth/password";
+import { createNewPasswordHash } from "@/utils/password";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
 import { useFormState } from "react-dom";

@@ -7,6 +7,7 @@ import {
   bigserial,
   serial,
   boolean,
+  json,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -15,7 +16,6 @@ export const userTable = pgTable("user", {
   email: text("email").unique(),
   emailVerified: boolean("email_verified").notNull().default(false),
   // TODO: Create an id suffix for the username
-  username: text("username").unique(),
   passwordHash: text("password_hash"),
 });
 
@@ -76,3 +76,32 @@ export const passwordResetTokenTable = pgTable("password_reset_token", {
     mode: "date",
   }).notNull(),
 });
+
+export const workspaceTable = pgTable("workspace", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  // TODO: Create a unique constraint for the workspace name for users (not globally unique)
+  name: text("name"),
+  userId: text("user_id").references(() => userTable.id),
+});
+
+export const workspaceInsertSchema = createInsertSchema(workspaceTable);
+export const workspaceSelectSchema = createSelectSchema(workspaceTable);
+
+export type WorkspaceInsertSchema = typeof workspaceTable.$inferInsert;
+export type WorkspaceSelectSchema = typeof workspaceTable.$inferSelect;
+
+export const accountTable = pgTable("account", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  userId: text("user_id").references(() => userTable.id),
+  username: text("username"),
+  avatar: json("avatar").default({
+    url: null,
+    alt: null,
+  }),
+});
+
+export const accountInsertSchema = createInsertSchema(accountTable);
+export const accountSelectSchema = createSelectSchema(accountTable);
+
+export type AccountInsertSchema = typeof accountTable.$inferInsert;
+export type AccountSelectSchema = typeof accountTable.$inferSelect;

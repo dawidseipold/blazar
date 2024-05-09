@@ -1,6 +1,6 @@
 "use client";
 
-import { signUp } from "@/utils/auth/sign";
+import { signUp } from "@/utils/sign";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
 

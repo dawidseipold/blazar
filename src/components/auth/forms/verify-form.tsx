@@ -1,6 +1,6 @@
 "use client";
 
-import { verifyUser } from "@/utils/auth/user";
+import { verifyUser } from "@/utils/user";
 import { Field, Form } from "houseform";
 import { useRef } from "react";
 
